@@ -1,6 +1,6 @@
 import { Server } from "./Server";
 import express, { Request, Response } from 'express';
-
+import multer from 'multer';
 export class App {
   server?: Server;
 
@@ -22,6 +22,14 @@ app.get('/user', (req: Request, res: Response) => {
   const user = { name: name || 'username', age: age || 6, url: `${protocol}://${hostname}${req.originalUrl}` };
 
   res.json(user);
+});
+
+app.get('/upload', (req: Request, res: Response) =>{
+  const { protocol, hostname } = req;
+  const file = req.query;
+
+
+
 });
 
 app.listen(port, () => {
