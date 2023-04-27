@@ -29,11 +29,12 @@ const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb)=>{
     console.log('Mimetype:   ', file.mimetype);
-    if (file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/gif'){
-      cb(null, true);
-    }else{
-      throw new Error('the file is not .png, .jpg or .gif');
-    }
+      if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/gif')  {
+        cb(null, true);
+      }
+      else{
+        throw new Error ('no funciona porque no has hecho testing');
+      }
   }
 }).single('file');
 
@@ -43,7 +44,7 @@ app.get('/user', (req: Request, res: Response) => {
   const { name, age } = req.query;
 
   const user = { name: name || 'username', age: age || 6, url: `${protocol}://${hostname}${req.originalUrl}` };
-
+  console.log('succesfully sent user to http://localhost:8000 in the folder /user')
   res.json(user);
 });
 
