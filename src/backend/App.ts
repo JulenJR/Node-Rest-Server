@@ -1,5 +1,7 @@
 import { Server } from "./Server";
 import express, { Request, Response } from 'express';
+import path from 'path';
+import * as fs from 'fs';
 import multer from 'multer';
 export class App {
   server?: Server;
@@ -14,30 +16,19 @@ export class App {
 
 const app = express();
 const port = process.env.PORT || 8000;
+const upload = multer({ dest: '../../upload' });
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb)=>{
-    cb(null, 'upload/');
-  },
-  filename: (req, file, cb)=>{
-    cb(null, file.originalname);
+app.post('/upload',upload.single('file'), (req : Request, res : Response) =>{
+  
+  const file = req.file;
+  if (!file) {
+    res.status(400).json({ error: 'No file uploaded' });
+    return;
   }
-});
 
+  res.json({ message: 'File uploaded successfully', file: file });
 
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb)=>{
-    console.log('Mimetype:   ', file.mimetype);
-      if(file.mimetype === 'image/png' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/gif')  {
-        cb(null, true);
-      }
-      else{
-        throw new Error ('no funciona porque no has hecho testing');
-      }
-  }
-}).single('file');
-
+})
 
 app.get('/user', (req: Request, res: Response) => {
   const { protocol, hostname } = req;
@@ -48,12 +39,7 @@ app.get('/user', (req: Request, res: Response) => {
   res.json(user);
 });
 
-app.post('/upload',upload, (req: Request, res: Response) =>{
-  
-  if (!req.file) res.status(400).json({ error: 'No file uploaded' });
-  else res.json({ message: 'File uploaded succsesfully', file: req.file });
 
-});  
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
