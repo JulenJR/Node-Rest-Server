@@ -24,6 +24,9 @@ const upload = multer({
   dest: '../../upload'
 });
 
+
+//curl -X POST -F "file=@C:\\Users\\formacio\\Downloads\\image.png" http://localhost:8000/upload
+
 app.post('/upload',upload.single('file'), (req : Request, res : Response) =>{
   
   const file = req.file;
