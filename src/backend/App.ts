@@ -2,6 +2,9 @@ import { Server } from "./Server";
 import express, { Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import cors from 'cors';
+import axios from "axios";
+
+require = require('esm')(module);
 
 export class App {
   server?: Server;
@@ -72,6 +75,24 @@ app.get('/user', (req: Request, res: Response) => {
   const user = { name: name || 'username', age: age || 6, url: `${protocol}://${hostname}${req.originalUrl}` };
   console.log('successfully sent user to http://localhost:8000 in the folder /user')
   res.json(user);
+});
+
+app.get('/pokemon/:id', async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
+  
+  try {
+    const response = await axios.get(url);
+    const data = response.data;
+    const name = data.name;
+    const height = data.height;
+    const weight = data.weight;
+    
+    res.json({name, height, weight });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.listen(port, () => {
