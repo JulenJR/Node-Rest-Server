@@ -1,7 +1,5 @@
 import { Server } from "./Server";
 import express, { Request, Response } from 'express';
-import path from 'path';
-import * as fs from 'fs';
 import multer from 'multer';
 export class App {
   server?: Server;
@@ -16,7 +14,15 @@ export class App {
 
 const app = express();
 const port = process.env.PORT || 8000;
-const upload = multer({ dest: '../../upload' });
+const upload = multer({
+  fileFilter: function(req, file, cb) {
+    if (!file.originalname.match(/\.(png|jpg|jpeg|gif)$/)) {
+      return cb(new Error('Only image files (png, jpg, jpeg, gif) are allowed!'));
+    }
+    cb(null, true);
+  },
+  dest: '../../upload'
+});
 
 app.post('/upload',upload.single('file'), (req : Request, res : Response) =>{
   
@@ -28,7 +34,7 @@ app.post('/upload',upload.single('file'), (req : Request, res : Response) =>{
 
   res.json({ message: 'File uploaded successfully', file: file });
 
-})
+});
 
 app.get('/user', (req: Request, res: Response) => {
   const { protocol, hostname } = req;
