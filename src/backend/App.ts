@@ -71,8 +71,8 @@ app.post('/time',checkUserData , (req: Request, res: Response) => {
 
 app.get('/user', (req: Request, res: Response) => {
   const { protocol, hostname } = req;
-  const { name, age } = req.query;
-  const user = { name: name || 'username', age: age || 6, url: `${protocol}://${hostname}${req.originalUrl}` };
+  const { name, age } = req.body;
+  const user = { name: name, age: age, url: `${protocol}://${hostname}${req.originalUrl}` };
   console.log('successfully sent user to http://localhost:8000 in the folder /user')
   res.json(user);
 });
