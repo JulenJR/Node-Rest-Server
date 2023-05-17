@@ -36,20 +36,12 @@ export class Server {
       dest: FILE_UPLOAD_DESTINATION,
     });
 
-    const cacheControlMiddleware = (
-      req: Request,
-      res: Response,
-      next: NextFunction
-    ) => {
+    const cacheControlMiddleware = ( req: Request, res: Response, next: NextFunction ) => {
       res.setHeader("Cache-Control", "no-cache");
       next();
     };
 
-    const checkUserDataMiddleware = (
-      req: Request,
-      res: Response,
-      next: NextFunction
-    ) => {
+    const checkUserDataMiddleware = ( req: Request,  res: Response, next: NextFunction ) => {
       const { username, password } = req.body;
       if (!username || !password) {
         return res.status(401).json({ error: "Unauthorized" });
