@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable simple-import-sort/imports */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable object-shorthand */

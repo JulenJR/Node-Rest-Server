@@ -5,8 +5,6 @@
 /* eslint-disable prettier/prettier */
 import { Server } from "./Server";
 
-require = require('esm')(module);
-
 export default class App {
   server?: Server;
 
