@@ -2,7 +2,7 @@ import { json, urlencoded } from "body-parser";
 import cors from "cors";
 import express, { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
-import multer from "multer";
+import multer, { FileFilterCallback } from "multer";
 import axios from "axios";
 
 export class Server {
@@ -18,14 +18,15 @@ export class Server {
     this.app.use(urlencoded({ extended: true }));
 
     const upload = multer({
-      fileFilter: function (req, file, cb) {
-        if (!file.originalname.match(/\.(png|jpg|jpeg|gif)$/)) {
-          return cb(new Error("Only image files (png, jpg, jpeg, gif) are allowed!"));
-        }
-        cb(null, true);
-      },
-      dest: "../../upload",
-    });
+		fileFilter: function (req: Request, file: Express.Multer.File, cb: FileFilterCallback) {
+		  if (!file.originalname.match(/\.(png|jpg|jpeg|gif)$/)) {
+			cb(new Error("Only image files (png, jpg, jpeg, gif) are allowed!"));
+		  } else {
+			cb(null, true);
+		  }
+		},
+		dest: "../../upload"
+	  });
 
     // Cache-Control header middleware
     this.app.use(function (req: Request, res: Response, next: NextFunction) {
@@ -34,13 +35,14 @@ export class Server {
     });
 
     this.app.post("/upload", upload.single("file"), (req: Request, res: Response) => {
-      const file = req.file;
-      if (!file) {
-        res.status(400).json({ error: "No file uploaded" });
-        return;
-      }
-      res.json({ message: "File uploaded successfully", file: file });
-    });
+		const file = req.file;
+		if (!file) {
+		  res.status(400).json({ error: "No file uploaded" });
+		  return;
+		}
+		res.json({ message: "File uploaded successfully", file: file });
+	  });
+	  
 
     function checkUserData(req: Request, res: Response, next: NextFunction) {
       const { username, password } = req.body;
@@ -51,11 +53,12 @@ export class Server {
     }
 
     this.app.post("/time", checkUserData, (req: Request, res: Response) => {
-      const { username } = req.body;
-      const actualDate = new Date().toLocaleString();
-      const result = { time: actualDate, username: username };
-      res.json(result);
-    });
+		const { username } = req.body;
+		const actualDate = new Date().toLocaleString();
+		const result = { time: actualDate, username: username };
+		res.json(result);
+	  });
+	  
 
     this.app.get("/user", (req: Request, res: Response) => {
       const { protocol, hostname } = req;
@@ -82,7 +85,7 @@ export class Server {
         res.status(500).send("Internal Server Error");
       }
     });
-  }
+}
 
   async listen(): Promise<void> {
     await new Promise<void>((resolve) => {
