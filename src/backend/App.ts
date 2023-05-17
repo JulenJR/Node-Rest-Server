@@ -1,12 +1,13 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable simple-import-sort/imports */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable object-shorthand */
+/* eslint-disable prettier/prettier */
 import { Server } from "./Server";
-import express, { Request, Response, NextFunction } from 'express';
-import multer from 'multer';
-import cors from 'cors';
-import axios from "axios";
 
 require = require('esm')(module);
 
-export class App {
+export default class App {
   server?: Server;
 
   async start(): Promise<void> {

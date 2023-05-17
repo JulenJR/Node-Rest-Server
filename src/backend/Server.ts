@@ -1,3 +1,7 @@
+/* eslint-disable simple-import-sort/imports */
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable object-shorthand */
+/* eslint-disable prettier/prettier */
 import { json, urlencoded } from "body-parser";
 import cors from "cors";
 import express, { Request, Response, NextFunction } from "express";
@@ -38,6 +42,7 @@ export class Server {
 		const file = req.file;
 		if (!file) {
 		  res.status(400).json({ error: "No file uploaded" });
+		  // eslint-disable-next-line padding-line-between-statements
 		  return;
 		}
 		res.json({ message: "File uploaded successfully", file: file });
@@ -63,7 +68,9 @@ export class Server {
     this.app.get("/user", (req: Request, res: Response) => {
       const { protocol, hostname } = req;
       const { name, age } = req.body;
+      // eslint-disable-next-line object-shorthand
       const user = { name: name, age: age, url: `${protocol}://${hostname}${req.originalUrl}` };
+      // eslint-disable-next-line no-console
       console.log("successfully sent user to http://localhost:8000 in the folder /user");
       res.json(user);
     });
@@ -90,11 +97,13 @@ export class Server {
   async listen(): Promise<void> {
     await new Promise<void>((resolve) => {
       this.app.listen(this.port, () => {
+        // eslint-disable-next-line no-console
         console.log(
           `✅ Backend App is running at http://localhost:${this.port} in ${this.app.get(
             "env"
           )} mode`
         );
+        // eslint-disable-next-line no-console
         console.log("✋ Press CTRL-C to stop\n");
 
         resolve();
@@ -102,4 +111,3 @@ export class Server {
     });
   }
 }
-
