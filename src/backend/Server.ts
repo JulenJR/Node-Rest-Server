@@ -65,7 +65,7 @@ export class Server {
       const { protocol, hostname } = req;
       const { name, age } = req.body;
       const user = { name: name, age: age, url: `${protocol}://${hostname}${req.originalUrl}` };
-      console.log("successfully sent user to http://localhost:8000 in the folder /user");
+      console.log(`successfully sent user to http://localhost:${port} in the folder /user`);
       res.json(user);
     });
 
