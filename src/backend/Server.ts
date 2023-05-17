@@ -22,8 +22,16 @@ export class Server {
     this.app.use(urlencoded({ extended: true }));
 
     const upload = multer({
-      fileFilter: (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-        if (!file.originalname.match(new RegExp(`\\.(${ALLOWED_IMAGE_EXTENSIONS.join("|")})$`))) {
+      fileFilter: (
+        req: Request,
+        file: Express.Multer.File,
+        cb: FileFilterCallback
+      ) => {
+        if (
+          !file.originalname.match(
+            new RegExp(`\\.(${ALLOWED_IMAGE_EXTENSIONS.join("|")})$`)
+          )
+        ) {
           cb(new Error("Only image files (png, jpg, jpeg, gif) are allowed!"));
         } else {
           cb(null, true);
@@ -32,12 +40,20 @@ export class Server {
       dest: FILE_UPLOAD_DESTINATION,
     });
 
-    const cacheControlMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const cacheControlMiddleware = (
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) => {
       res.setHeader("Cache-Control", "no-cache");
       next();
     };
 
-    const checkUserDataMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    const checkUserDataMiddleware = (
+      req: Request,
+      res: Response,
+      next: NextFunction
+    ) => {
       const { username, password } = req.body;
       if (!username || !password) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -48,25 +64,31 @@ export class Server {
     this.app.use(cacheControlMiddleware);
 
     this.app.post("/upload", upload.single("file"), (req: Request, res: Response) => {
-      const file = req.file;
-      if (!file) {
-        return res.status(400).json({ error: "No file uploaded" });
+        const file = req.file;
+        if (!file) {
+          return res.status(400).json({ error: "No file uploaded" });
+        }
+        res.json({ message: "File uploaded successfully", file });
       }
-      res.json({ message: "File uploaded successfully", file });
-    });
+    );
 
     this.app.post("/time", checkUserDataMiddleware, (req: Request, res: Response) => {
-      const { username } = req.body;
-      const actualDate = new Date().toLocaleString();
-      const timeResponse = { time: actualDate, username };
-      res.json(timeResponse);
-    });
+        const { username } = req.body;
+        const actualDate = new Date().toLocaleString();
+        const timeResponse = { time: actualDate, username };
+        res.json(timeResponse);
+      }
+    );
 
     this.app.get("/user", (req: Request, res: Response) => {
       const { protocol, hostname } = req;
       const { name, age } = req.body;
-      const user = { name, age, url: `${protocol}://${hostname}${req.originalUrl}` };
-      console.log(`successfully sent user to http://localhost:${port} in the folder /user`);
+      const user = {
+        name,
+        age,
+        url: `${protocol}://${hostname}:${port}${req.originalUrl}`,
+      };
+      console.log( `successfully sent user to http://localhost:${port} in the folder /user` );
       res.json(user);
     });
 
@@ -89,10 +111,7 @@ export class Server {
     await new Promise<void>((resolve) => {
       this.app.listen(this.port, () => {
         console.log(
-          `✅ Backend App is running at http://localhost:${this.port} in ${this.app.get(
-            "env"
-          )} mode`
-        );
+          `✅ Backend App is running at http://localhost:${this.port} in ${this.app.get("env")} mode`);
         console.log("✋ Press CTRL-C to stop\n");
 
         resolve();
