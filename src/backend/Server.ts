@@ -22,11 +22,7 @@ export class Server {
     this.app.use(urlencoded({ extended: true }));
 
     const upload = multer({
-      fileFilter: (
-        req: Request,
-        file: Express.Multer.File,
-        cb: FileFilterCallback
-      ) => {
+      fileFilter: ( req: Request, file: Express.Multer.File, cb: FileFilterCallback ) => {
         if (
           !file.originalname.match(
             new RegExp(`\\.(${ALLOWED_IMAGE_EXTENSIONS.join("|")})$`)
