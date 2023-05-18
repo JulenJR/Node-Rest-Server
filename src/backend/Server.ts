@@ -99,10 +99,7 @@ export class Server {
     await new Promise<void>((resolve) => {
       this.app.listen(this.port, () => {
         console.log(
-          `✅ Backend App is running at http://localhost:${this.port} in ${this.app.get(
-            "env"
-          )} mode`
-        );
+          `✅ Backend App is running at http://localhost:${this.port} in ${this.app.get("env")} mode`);
         console.log("✋ Press CTRL-C to stop\n");
 
         resolve();
