@@ -4,7 +4,6 @@ import cors from "cors";
 import express, { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
 import multer, { FileFilterCallback } from "multer";
-import axios from "axios";
 
 export class Server {
   private readonly app: express.Express;
@@ -86,8 +85,9 @@ export class Server {
     const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
 
     try {
-      const response = await axios.get(url);
-      const { name, height, weight } = response.data;
+      const response = await fetch(url);
+      const data  = await response.json();
+      const { name, height, weight } = data;
       res.json({ name, height, weight });
     } catch (error) {
       console.error(error);
