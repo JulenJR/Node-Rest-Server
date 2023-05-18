@@ -3,8 +3,10 @@ import { json, urlencoded } from "body-parser";
 import cors from "cors";
 import express, { Request, Response, NextFunction } from "express";
 import helmet from "helmet";
-import multer, { FileFilterCallback } from "multer";
-
+import { fileRouter } from "../file/infrastructure/routes/file-router";
+import {userRouter} from '../user/infrastructure/routes/user-router';
+import { timeRouter } from "../time/infrastructure/routes/time-router";
+import { pokemonRouter } from "../pokemon/infrastructure/routes/pokemon-router";
 export class Server {
   private readonly app: express.Express;
   private readonly port: string;
@@ -22,23 +24,11 @@ export class Server {
     this.app.use(json());
     this.app.use(urlencoded({ extended: true }));
 
-    const upload = multer({
-      fileFilter: (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-        if (!file.originalname.match(/\.(png|jpg|jpeg|gif)$/)) {
-          cb(new Error("Only image files (png, jpg, jpeg, gif) are allowed!"));
-        } else {
-          cb(null, true);
-        }
-      },
-      dest: "../../upload",
-    });
-
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       res.setHeader("Cache-Control", "no-cache");
       next();
     });
 
-    this.app.use("/upload", upload.single("file"));
   }
 
   private setupRoutes(): void {
@@ -49,50 +39,10 @@ export class Server {
       }
       next();
     };
-
-    this.app.post("/upload", this.handleUpload);
-    this.app.post("/time", checkUserData, this.handleTime);
-    this.app.get("/user", this.handleUser);
-    this.app.get("/pokemon/:id", this.handlePokemon);
-  }
-
-  private handleUpload(req: Request, res: Response): void {
-    const file = req.file;
-    if (!file) {
-      res.status(400).json({ error: "No file uploaded" });
-      return;
-    }
-    res.json({ message: "File uploaded successfully", file });
-  }
-
-  private handleTime(req: Request, res: Response): void {
-    const { username } = req.body;
-    const actualDate = new Date().toLocaleString();
-    const result = { time: actualDate, username };
-    res.json(result);
-  }
-
-  private handleUser(req: Request, res: Response): void {
-    const { protocol, hostname } = req;
-    const { name, age } = req.body;
-    const user = { name, age, url: `${protocol}://${hostname}${req.originalUrl}` };
-    console.log(`successfully sent user to http://localhost:8000 in the folder /user`);
-    res.json(user);
-  }
-
-  private async handlePokemon(req: Request, res: Response): Promise<void> {
-    const id = req.params.id;
-    const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
-
-    try {
-      const response = await fetch(url);
-      const data  = await response.json();
-      const { name, height, weight } = data;
-      res.json({ name, height, weight });
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    }
+    this.app.use(fileRouter)
+    this.app.use(userRouter)
+    this.app.use(timeRouter);
+    this.app.use(pokemonRouter);
   }
 
   async listen(): Promise<void> {

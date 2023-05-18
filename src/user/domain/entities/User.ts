@@ -1,17 +1,14 @@
-class User {
-	private readonly name: string;
-
-	constructor(name: string) {
-		this.name = name;
-	}
-
-	sayHello(): string {
-		return `Hello, I am ${this.name}`;
-	}
-
-	toPrimitive(): { name: string } {
-		return { name: this.name };
-	}
+/* eslint-disable*/
+import { Url } from "../value-objects/Url";
+import { Name } from "../value-objects/Name";
+import { Age } from "../value-objects/Age";
+export class User{
+    private name: Name
+    private age: Age
+    private url: Url
+    constructor(name: Name, age: Age, url: Url) {
+        this.name = name;
+        this.age = age;
+        this.url = url;
+    }
 }
-
-export default User;
