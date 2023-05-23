@@ -11,7 +11,7 @@ export const fileMiddleware = multer({
 			cb(null, true);
 		}
 	},
-	dest: "../../upload",
+	dest: "../../../../upload",
 });
 
 
