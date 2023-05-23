@@ -13,7 +13,5 @@ export class UploadFileController {
             return;
         }
         res.json({ message: "File uploaded successfully", file });
-
     }
-
 }
